@@ -73,6 +73,8 @@ function App() {
   const [isCopied, setIsCopied] = useState(false);
   const [showPdfModal, setShowPdfModal] = useState(false);
   const [generatedImages, setGeneratedImages] = useState([]);
+  const [sessionTime, setSessionTime] = useState(0);
+  const [lastExecutionTime, setLastExecutionTime] = useState(null);
 
   const editorRef = useRef(null);
   const terminalRef = useRef(null);
@@ -80,6 +82,7 @@ function App() {
   const activeWsRef = useRef(null);
   const pendingPdfExportRef = useRef(false);
   const dropdownRef = useRef(null);
+  const executionStartRef = useRef(null);
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -92,10 +95,25 @@ function App() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Session timer - track workspace active time
+  useEffect(() => {
+    const sessionInterval = setInterval(() => {
+      setSessionTime(prev => prev + 1);
+    }, 1000);
+    return () => clearInterval(sessionInterval);
+  }, []);
+
   // Sync theme to document body for global CSS variables
   useEffect(() => {
     document.body.setAttribute('data-theme', theme);
   }, [theme]);
+
+  // Helper to format time as MM:SS
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  };
 
   // Sync theme to xterm.js instance
   useEffect(() => {
@@ -204,6 +222,9 @@ function App() {
         activeWsRef.current.close();
     }
 
+    // Capture high-resolution start time for execution tracking
+    executionStartRef.current = performance.now();
+
     if (language === 'html') {
         // Run completely fully on the browser rendering engine statically instead of WebSockets
         const combinedPreview = `<!DOCTYPE html>
@@ -296,6 +317,12 @@ ${jsCode}
 
     ws.onclose = () => {
         inputDisposable.dispose();
+        // Calculate execution time
+        if (executionStartRef.current) {
+            const executionMs = performance.now() - executionStartRef.current;
+            setLastExecutionTime(executionMs);
+            executionStartRef.current = null;
+        }
         setIsRunning(false);
         if (activeWsRef.current === ws) {
             activeWsRef.current = null;
@@ -463,6 +490,19 @@ ${jsCode}
               "Run Code"
             )}
           </button>
+
+          <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginLeft: '1.5rem', paddingLeft: '1.5rem', borderLeft: '1px solid rgba(255,255,255,0.1)' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '2px' }}>
+              <span style={{ fontSize: '0.7rem', fontWeight: '600', letterSpacing: '0.5px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Session</span>
+              <span style={{ fontSize: '0.9rem', fontWeight: '500', color: 'var(--text-main)', fontFamily: "'JetBrains Mono', monospace" }}>{formatTime(sessionTime)}</span>
+            </div>
+            {lastExecutionTime !== null && (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '2px' }}>
+                <span style={{ fontSize: '0.7rem', fontWeight: '600', letterSpacing: '0.5px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Last Run</span>
+                <span style={{ fontSize: '0.9rem', fontWeight: '500', color: 'var(--accent-primary)', fontFamily: "'JetBrains Mono', monospace" }}>{lastExecutionTime.toFixed(0)}ms</span>
+              </div>
+            )}
+          </div>
         </div>
       </nav>
 
@@ -475,11 +515,12 @@ ${jsCode}
               <div className={getPaneClassName('html')}>
                 <div 
                   className="pane-header"
-                  style={{ cursor: 'pointer', userSelect: 'none', background: getActiveHeaderColor('html'), transition: 'background 0.3s' }}
+                  style={{ cursor: 'pointer', userSelect: 'none', background: getActiveHeaderColor('html'), transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}
                   onClick={() => setActivePane(activePane === 'html' ? null : 'html')}
+                  title="Click to expand/collapse"
                 >
                   <div className="pane-header-icon"></div>
-                  index.html
+                  <span style={{ fontSize: '0.85rem', fontWeight: '600', letterSpacing: '0.8px' }}>index.html</span>
                 </div>
                 <div style={{ flex: 1, position: 'relative' }} onClickCapture={() => setActivePane('html')}>
                   <Editor
@@ -495,11 +536,12 @@ ${jsCode}
               <div className={getPaneClassName('css')}>
                 <div 
                   className="pane-header"
-                  style={{ cursor: 'pointer', userSelect: 'none', background: getActiveHeaderColor('css'), transition: 'background 0.3s' }}
+                  style={{ cursor: 'pointer', userSelect: 'none', background: getActiveHeaderColor('css'), transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}
                   onClick={() => setActivePane(activePane === 'css' ? null : 'css')}
+                  title="Click to expand/collapse"
                 >
                   <div className="pane-header-icon"></div>
-                  style.css
+                  <span style={{ fontSize: '0.85rem', fontWeight: '600', letterSpacing: '0.8px' }}>style.css</span>
                 </div>
                 <div style={{ flex: 1, position: 'relative' }} onClickCapture={() => setActivePane('css')}>
                   <Editor
@@ -515,11 +557,12 @@ ${jsCode}
               <div className={getPaneClassName('js')}>
                 <div 
                   className="pane-header"
-                  style={{ cursor: 'pointer', userSelect: 'none', background: getActiveHeaderColor('js'), transition: 'background 0.3s' }}
+                  style={{ cursor: 'pointer', userSelect: 'none', background: getActiveHeaderColor('js'), transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}
                   onClick={() => setActivePane(activePane === 'js' ? null : 'js')}
+                  title="Click to expand/collapse"
                 >
                   <div className="pane-header-icon"></div>
-                  script.js
+                  <span style={{ fontSize: '0.85rem', fontWeight: '600', letterSpacing: '0.8px' }}>script.js</span>
                 </div>
                 <div style={{ flex: 1, position: 'relative' }} onClickCapture={() => setActivePane('js')}>
                   <Editor
@@ -538,12 +581,14 @@ ${jsCode}
               <div className="pane-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <div className="pane-header-icon"></div>
-                  {`source_code.${MONACO_LANGS[language] === 'python' ? 'py' : MONACO_LANGS[language] === 'javascript' ? 'js' : MONACO_LANGS[language] === 'c' ? 'c' : MONACO_LANGS[language] === 'java' ? 'java' : MONACO_LANGS[language] === 'csharp' ? 'cs' : 'cpp'}`}
+                  <span style={{ fontSize: '0.85rem', fontWeight: '600', letterSpacing: '0.8px' }}>
+                    {`source_code.${MONACO_LANGS[language] === 'python' ? 'py' : MONACO_LANGS[language] === 'javascript' ? 'js' : MONACO_LANGS[language] === 'c' ? 'c' : MONACO_LANGS[language] === 'java' ? 'java' : MONACO_LANGS[language] === 'csharp' ? 'cs' : 'cpp'}`}
+                  </span>
                 </div>
-                <div style={{ display: 'flex', gap: '8px' }}>
+                <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
                   <button 
                     className="clear-output-btn"
-                    style={{ marginLeft: 0 }}
+                    style={{ marginLeft: 0, padding: '0.5rem 0.9rem', fontSize: '0.75rem' }}
                     onClick={() => setSourceCode('')}
                     title="Clear Code"
                   >
@@ -551,7 +596,7 @@ ${jsCode}
                   </button>
                   <button 
                     className="clear-output-btn"
-                    style={{ marginLeft: 0 }}
+                    style={{ marginLeft: 0, padding: '0.5rem 0.9rem', fontSize: '0.75rem' }}
                     onClick={() => setShowPdfModal(true)}
                     title="Export Code to PDF"
                   >
@@ -559,7 +604,7 @@ ${jsCode}
                   </button>
                   <button 
                     className="clear-output-btn"
-                    style={{ marginLeft: 0 }}
+                    style={{ marginLeft: 0, padding: '0.5rem 0.9rem', fontSize: '0.75rem' }}
                     onClick={() => {
                       navigator.clipboard.writeText(sourceCode);
                       setIsCopied(true);
@@ -567,7 +612,7 @@ ${jsCode}
                     }}
                     title="Copy code to clipboard"
                   >
-                    {isCopied ? "Copied!" : "Copy"}
+                    {isCopied ? "✓ Copied!" : "Copy"}
                   </button>
                 </div>
               </div>
@@ -600,12 +645,15 @@ ${jsCode}
             <div className="pane-header output-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <div className="pane-header-icon"></div>
-                {language === 'html' ? 'Web Preview' : 'Live Terminal'}
+                <span style={{ fontSize: '0.85rem', fontWeight: '600', letterSpacing: '0.8px' }}>
+                  {language === 'html' ? '🌐 Web Preview' : '⌨️ Terminal'}
+                </span>
               </div>
               <button 
                 className="clear-output-btn" 
                 onClick={handleClearOutput}
                 title="Clear Output"
+                style={{ marginLeft: 'auto', padding: '0.5rem 0.9rem', fontSize: '0.75rem' }}
               >
                 Clear
               </button>
@@ -616,52 +664,61 @@ ${jsCode}
               ref={terminalRef} 
               style={{ 
                   flex: 1, 
-                  padding: '1rem', 
+                  padding: '1.2rem', 
                   overflow: 'hidden', 
-                  background: theme === 'light' ? '#ffffff' : '#0f111a',
-                  display: language === 'html' ? 'none' : 'block'
+                  background: theme === 'light' ? '#ffffff' : '#050810',
+                  display: language === 'html' ? 'none' : 'block',
+                  transition: 'background 0.3s ease'
               }}
             ></div>
 
             {/* Genarated Graphical Outputs */}
             {generatedImages.length > 0 && language !== 'html' && (
                 <div style={{
-                    padding: '16px',
-                    background: theme === 'light' ? '#f8fafc' : '#181825',
-                    borderTop: `1px solid ${theme === 'light' ? '#e2e8f0' : '#313244'}`,
+                    padding: '1.2rem',
+                    background: theme === 'light' ? '#f3f5f9' : '#161b26',
+                    borderTop: `1px solid ${theme === 'light' ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.06)'}`,
                     display: 'flex',
-                    gap: '16px',
+                    gap: '1rem',
                     overflowX: 'auto',
-                    minHeight: '200px'
+                    minHeight: '200px',
+                    scrollBehavior: 'smooth'
                 }}>
                     {generatedImages.map((img, idx) => (
-                        <div key={idx} style={{ position: 'relative', minWidth: 'fit-content', display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center' }}>
+                        <div key={idx} style={{ position: 'relative', minWidth: 'fit-content', display: 'flex', flexDirection: 'column', gap: '0.8rem', alignItems: 'center' }}>
                             <img 
                                 src={img.dataUrl} 
                                 alt={img.filename} 
                                 style={{ 
                                     height: '240px', 
-                                    borderRadius: '6px', 
-                                    border: `1px solid ${theme === 'light' ? '#cbd5e1' : '#45475a'}`,
+                                    borderRadius: '10px', 
+                                    border: `1px solid ${theme === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.08)'}`,
                                     background: '#fff',
-                                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)'
-                                }} 
+                                    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
+                                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                                    cursor: 'pointer'
+                                }}
+                                onMouseEnter={(e) => e.target.style.boxShadow = '0 12px 36px rgba(99, 102, 241, 0.25), 0 0 1px rgba(255,255,255,0.1)'}
+                                onMouseLeave={(e) => e.target.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.15)'}
                             />
                             <a 
                                 href={img.dataUrl} 
                                 download={img.filename} 
                                 className="run-btn" 
                                 style={{ 
-                                    padding: '6px 16px',
-                                    fontSize: '12px',
+                                    padding: '0.6rem 1.2rem',
+                                    fontSize: '0.85rem',
                                     textDecoration: 'none',
                                     width: '100%',
                                     boxSizing: 'border-box',
                                     textAlign: 'center',
-                                    display: 'block'
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    gap: '6px'
                                 }}
                             >
-                                Download {img.filename}
+                                ⬇️ Download
                             </a>
                         </div>
                     ))}
@@ -670,7 +727,7 @@ ${jsCode}
 
             {/* Browser Preview IFrame */}
             {language === 'html' && (
-              <div style={{ flex: 1, backgroundColor: theme === 'light' ? '#ffffff' : '#0f111a', overflow: 'hidden' }}>
+              <div style={{ flex: 1, backgroundColor: theme === 'light' ? '#ffffff' : '#050810', overflow: 'hidden', borderRadius: '0 0 12px 12px' }}>
                 <iframe
                   title="Web Preview"
                   sandbox="allow-scripts allow-modals allow-popups"
@@ -679,7 +736,8 @@ ${jsCode}
                     width: '100%',
                     height: '100%',
                     border: 'none',
-                    display: 'block'
+                    display: 'block',
+                    background: theme === 'light' ? '#ffffff' : '#050810'
                   }}
                 />
               </div>
@@ -693,45 +751,56 @@ ${jsCode}
       {showPdfModal && (
         <div style={{
           position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
-          backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 9999,
+          backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 9999,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          backdropFilter: 'blur(2px)'
+          backdropFilter: 'blur(8px)',
+          animation: 'fadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
         }}>
           <div style={{
-            background: theme === 'light' ? '#ffffff' : '#181825',
-            color: theme === 'light' ? '#333333' : '#cdd6f4',
-            padding: '24px', borderRadius: '12px', 
-            boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
-            width: '320px', textAlign: 'center',
-            border: `1px solid ${theme === 'light' ? '#e2e8f0' : '#313244'}`,
-            display: 'flex', flexDirection: 'column', gap: '16px'
+            background: theme === 'light' ? '#ffffff' : '#0f1419',
+            color: theme === 'light' ? '#0f172a' : '#f0f4f9',
+            padding: '2rem', 
+            borderRadius: '14px', 
+            boxShadow: '0 20px 60px rgba(0,0,0,0.4), 0 0 1px rgba(255,255,255,0.1)',
+            width: '100%',
+            maxWidth: '380px', 
+            textAlign: 'center',
+            border: `1px solid ${theme === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.08)'}`,
+            display: 'flex', 
+            flexDirection: 'column', 
+            gap: '1.2rem',
+            animation: 'slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
           }}>
-            <h3 style={{ margin: '0', fontSize: '20px' }}>Export PDF</h3>
-            <p style={{ margin: '0', fontSize: '14px', opacity: 0.8, lineHeight: '1.5' }}>
-              Would you like to include the terminal output along with your source code?
+            <h3 style={{ margin: '0', fontSize: '1.3rem', fontWeight: '700', letterSpacing: '-0.3px' }}>Export as PDF</h3>
+            <p style={{ margin: '0', fontSize: '0.95rem', opacity: 0.8, lineHeight: '1.6' }}>
+              Include terminal output with your source code?
             </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8px', alignItems: 'stretch' }}>
               <button 
                 className="run-btn" 
-                style={{ width: '100%', boxSizing: 'border-box', padding: '0.8rem', justifyContent: 'center' }}
+                style={{ width: '100%', boxSizing: 'border-box', padding: '0.85rem', justifyContent: 'center', borderRadius: '8px' }}
                 onClick={() => handleExportPdf(true)}
               >
-                With Output
+                ✓ With Output
               </button>
               <button 
                 className="clear-output-btn" 
-                style={{ width: '100%', boxSizing: 'border-box', padding: '0.8rem', justifyContent: 'center', textAlign: 'center' }}
+                style={{ width: '100%', boxSizing: 'border-box', padding: '0.85rem', justifyContent: 'center', textAlign: 'center', borderRadius: '8px' }}
                 onClick={() => handleExportPdf(false)}
               >
-                Without Output
+                ✕ Without Output
               </button>
               <button 
                 style={{ 
                   marginTop: '4px', background: 'transparent', border: 'none', 
-                  color: theme === 'light' ? '#64748b' : '#a6adc8', cursor: 'pointer',
-                  padding: '8px', fontSize: '13px', fontWeight: '500',
-                  width: '100%', boxSizing: 'border-box', textAlign: 'center'
+                  color: theme === 'light' ? '#64748b' : '#8b94a8', cursor: 'pointer',
+                  padding: '0.75rem', fontSize: '0.9rem', fontWeight: '500',
+                  width: '100%', boxSizing: 'border-box', textAlign: 'center',
+                  transition: 'all 0.2s ease',
+                  borderRadius: '6px'
                 }}
+                onMouseEnter={(e) => e.target.style.background = theme === 'light' ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.05)'}
+                onMouseLeave={(e) => e.target.style.background = 'transparent'}
                 onClick={() => setShowPdfModal(false)}
               >
                 Cancel
@@ -740,6 +809,22 @@ ${jsCode}
           </div>
         </div>
       )}
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes slideUp {
+          from { 
+            transform: translateY(20px);
+            opacity: 0;
+          }
+          to { 
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
+      `}</style>
     </div>
   );
 }
