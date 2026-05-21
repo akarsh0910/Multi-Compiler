@@ -1,0 +1,14 @@
+c:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_csharp_1774776769610\bin\Debug\net10.0\CSharpApp.exe
+c:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_csharp_1774776769610\bin\Debug\net10.0\CSharpApp.deps.json
+c:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_csharp_1774776769610\bin\Debug\net10.0\CSharpApp.runtimeconfig.json
+c:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_csharp_1774776769610\bin\Debug\net10.0\CSharpApp.dll
+c:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_csharp_1774776769610\bin\Debug\net10.0\CSharpApp.pdb
+c:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_csharp_1774776769610\obj\Debug\net10.0\CSharpApp.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_csharp_1774776769610\obj\Debug\net10.0\CSharpApp.AssemblyInfoInputs.cache
+c:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_csharp_1774776769610\obj\Debug\net10.0\CSharpApp.AssemblyInfo.cs
+c:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_csharp_1774776769610\obj\Debug\net10.0\CSharpApp.csproj.CoreCompileInputs.cache
+c:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_csharp_1774776769610\obj\Debug\net10.0\CSharpApp.dll
+c:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_csharp_1774776769610\obj\Debug\net10.0\refint\CSharpApp.dll
+c:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_csharp_1774776769610\obj\Debug\net10.0\CSharpApp.pdb
+c:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_csharp_1774776769610\obj\Debug\net10.0\CSharpApp.genruntimeconfig.cache
+c:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_csharp_1774776769610\obj\Debug\net10.0\ref\CSharpApp.dll

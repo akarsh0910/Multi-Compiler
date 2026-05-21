@@ -1,0 +1,5 @@
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\j5dmlo\out\CSharpApp.exe
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\j5dmlo\out\CSharpApp.dll
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\j5dmlo\out\CSharpApp.deps.json
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\j5dmlo\out\CSharpApp.runtimeconfig.json
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\j5dmlo\out\CSharpApp.pdb

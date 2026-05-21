@@ -1,0 +1,5 @@
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_publish\out\test_publish.exe
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_publish\out\test_publish.dll
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_publish\out\test_publish.deps.json
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_publish\out\test_publish.runtimeconfig.json
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_publish\out\test_publish.pdb

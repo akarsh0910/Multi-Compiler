@@ -1,0 +1,5 @@
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\2cvp8h\out\CSharpApp.exe
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\2cvp8h\out\CSharpApp.dll
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\2cvp8h\out\CSharpApp.deps.json
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\2cvp8h\out\CSharpApp.runtimeconfig.json
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\2cvp8h\out\CSharpApp.pdb

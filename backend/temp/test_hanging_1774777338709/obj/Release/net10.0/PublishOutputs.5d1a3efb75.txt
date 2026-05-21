@@ -1,0 +1,5 @@
+c:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_hanging_1774777338709\out\CSharpApp.exe
+c:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_hanging_1774777338709\out\CSharpApp.dll
+c:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_hanging_1774777338709\out\CSharpApp.deps.json
+c:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_hanging_1774777338709\out\CSharpApp.runtimeconfig.json
+c:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_hanging_1774777338709\out\CSharpApp.pdb

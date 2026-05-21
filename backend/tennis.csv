@@ -1,0 +1,8 @@
+Outlook,Temperature,Humidity,Wind,PlayTennis
+Sunny,Hot,High,Weak,No
+Sunny,Hot,High,Strong,No
+Overcast,Hot,High,Weak,Yes
+Rain,Mild,High,Weak,Yes
+Rain,Cool,Normal,Weak,Yes
+Rain,Cool,Normal,Strong,No
+Overcast,Cool,Normal,Strong,Yes

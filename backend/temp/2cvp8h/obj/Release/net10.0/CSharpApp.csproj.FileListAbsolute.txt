@@ -1,0 +1,14 @@
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\2cvp8h\bin\Release\net10.0\CSharpApp.exe
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\2cvp8h\bin\Release\net10.0\CSharpApp.deps.json
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\2cvp8h\bin\Release\net10.0\CSharpApp.runtimeconfig.json
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\2cvp8h\bin\Release\net10.0\CSharpApp.dll
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\2cvp8h\bin\Release\net10.0\CSharpApp.pdb
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\2cvp8h\obj\Release\net10.0\CSharpApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\2cvp8h\obj\Release\net10.0\CSharpApp.AssemblyInfoInputs.cache
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\2cvp8h\obj\Release\net10.0\CSharpApp.AssemblyInfo.cs
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\2cvp8h\obj\Release\net10.0\CSharpApp.csproj.CoreCompileInputs.cache
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\2cvp8h\obj\Release\net10.0\CSharpApp.dll
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\2cvp8h\obj\Release\net10.0\refint\CSharpApp.dll
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\2cvp8h\obj\Release\net10.0\CSharpApp.pdb
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\2cvp8h\obj\Release\net10.0\CSharpApp.genruntimeconfig.cache
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\2cvp8h\obj\Release\net10.0\ref\CSharpApp.dll

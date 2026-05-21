@@ -1,0 +1,14 @@
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_csharp\bin\Debug\net10.0\test_csharp.exe
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_csharp\bin\Debug\net10.0\test_csharp.deps.json
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_csharp\bin\Debug\net10.0\test_csharp.runtimeconfig.json
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_csharp\bin\Debug\net10.0\test_csharp.dll
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_csharp\bin\Debug\net10.0\test_csharp.pdb
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_csharp\obj\Debug\net10.0\test_csharp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_csharp\obj\Debug\net10.0\test_csharp.AssemblyInfoInputs.cache
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_csharp\obj\Debug\net10.0\test_csharp.AssemblyInfo.cs
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_csharp\obj\Debug\net10.0\test_csharp.csproj.CoreCompileInputs.cache
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_csharp\obj\Debug\net10.0\test_csharp.dll
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_csharp\obj\Debug\net10.0\refint\test_csharp.dll
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_csharp\obj\Debug\net10.0\test_csharp.pdb
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_csharp\obj\Debug\net10.0\test_csharp.genruntimeconfig.cache
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_csharp\obj\Debug\net10.0\ref\test_csharp.dll

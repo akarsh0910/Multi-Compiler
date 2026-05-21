@@ -1,0 +1,14 @@
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_publish\bin\Release\net10.0\test_publish.exe
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_publish\bin\Release\net10.0\test_publish.deps.json
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_publish\bin\Release\net10.0\test_publish.runtimeconfig.json
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_publish\bin\Release\net10.0\test_publish.dll
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_publish\bin\Release\net10.0\test_publish.pdb
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_publish\obj\Release\net10.0\test_publish.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_publish\obj\Release\net10.0\test_publish.AssemblyInfoInputs.cache
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_publish\obj\Release\net10.0\test_publish.AssemblyInfo.cs
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_publish\obj\Release\net10.0\test_publish.csproj.CoreCompileInputs.cache
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_publish\obj\Release\net10.0\test_publish.dll
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_publish\obj\Release\net10.0\refint\test_publish.dll
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_publish\obj\Release\net10.0\test_publish.pdb
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_publish\obj\Release\net10.0\test_publish.genruntimeconfig.cache
+C:\Users\nages\OneDrive\Desktop\Compiler\backend\temp\test_publish\obj\Release\net10.0\ref\test_publish.dll
