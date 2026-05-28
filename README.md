@@ -2,13 +2,13 @@
 
 A modern, high-performance online multi-language code playground and execution engine that allows users to write, compile, and run code directly in their browser. 
 
----
+
 
 ##  About
 
 **Multi-compiler** is a web-based sandbox built to eliminate the friction of local software setups for beginners. It provides an instantaneous execution environment for multiple programming languages with a side-by-side live terminal experience. Designed with clean modular architecture, it isolates frontend UI states from heavy compilation operations on the backend.
 
----
+
 
 ##  Core Features
 
@@ -29,7 +29,7 @@ A visual runtime debugger that breaks down complex execution logic. As the code 
 ### 2. AI Code Diagnostic Agent 
 An intelligent, context-aware chatbot helper integrated directly into the Live Terminal. Instead of traditional, confusing compiler errors (like raw `cannot find symbol` logs), the agent translates technical syntax breakages into intuitive, human-readable explanations with immediate debugging hints.
 
----
+
 
 ## Supported Compilation Environments
 
@@ -51,7 +51,7 @@ An intelligent, context-aware chatbot helper integrated directly into the Live T
 * **Node.js** & **Express.js** (Server layer and child process allocation)
 * **WebSockets** (Bi-directional pipelines for instant execution logs)
 
----
+
 
 ##  Project Structure
 
