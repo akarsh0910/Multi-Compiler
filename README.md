@@ -9,7 +9,6 @@ A modern, high-performance online multi-language code playground and execution e
 **Multi-compiler** is a web-based sandbox built to eliminate the friction of local software setups for beginners. It provides an instantaneous execution environment for multiple programming languages with a side-by-side live terminal experience. Designed with clean modular architecture, it isolates frontend UI states from heavy compilation operations on the backend.
 
 
-
 ##  Core Features
 
 *Simultaneous Multi-Language Support:** Write and run execution-ready code for Java, Python, JavaScript, C, C++, and C#.
@@ -62,4 +61,6 @@ Multi-compiler/
  ├── package.json    # Global configuration manifest
  └── README.md       # Project documentation
 
- Created by- Akarsh Singh Sisoudia
+ Created by-
+ Akarsh Singh Sisoudia
+ B.Tech SCE-AIML
