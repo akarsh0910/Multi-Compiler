@@ -189,7 +189,7 @@ function App() {
     term.writeln('\x1b[33mConnecting to backend...\x1b[0m\r\n');
 
     // WebSocket connection to backend
-    const API_URL = 'ws://localhost:5000/'; 
+    const API_URL = 'ws://multi-compiler-compiler.onrender.com/'; 
     const ws = new WebSocket(API_URL);
     activeWsRef.current = ws;
 
