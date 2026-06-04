@@ -7,66 +7,28 @@ import 'xterm/css/xterm.css';
 
 // Defaults for languages
 const DEFAULT_CODE = {
-  html: `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <style>
-    body {
-      background-color: var(--bg-dark, #1e1e2e);
-      color: var(--text-main, #cdd6f4);
-      font-family: system-ui, sans-serif;
-      text-align: center;
-      margin-top: 50px;
-    }
-    h1 { color: #89b4fa; }
-  </style>
-</head>
-<body>
-  <h1>Hello World!</h1>
-</body>
-</html>`,
   python: 'print("Hello World!")',
   javascript: 'console.log("Hello World!");',
-  c: '#include <stdio.h>\n\nint main() {\n    printf("Hello World!\\n");\n    return 0;\n}',
-  'c++': '#include <iostream>\n\nint main() {\n    std::cout << "Hello World!\\n";\n    return 0;\n}',
-  java: 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello World!");\n    }\n}',
-  csharp: 'using System;\n\nclass Program {\n    static void Main() {\n        Console.WriteLine("Hello World!");\n    }\n}'
+  java: 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello World!");\n    }\n}'
 };
 
 // Monaco language identifiers mapped to ours
 const MONACO_LANGS = {
-  html: 'html',
   python: 'python',
   javascript: 'javascript',
-  c: 'c',
-  'c++': 'cpp',
-  java: 'java',
-  csharp: 'csharp'
+  java: 'java'
 };
 
 const LANGUAGES = [
-  { id: 'html', name: 'HTML / CSS / JS', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg' },
   { id: 'python', name: 'Python', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg' },
   { id: 'javascript', name: 'JavaScript (Node)', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg' },
-  { id: 'c', name: 'C', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/c/c-original.svg' },
-  { id: 'c++', name: 'C++', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-original.svg' },
-  { id: 'java', name: 'Java', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg' },
-  { id: 'csharp', name: 'C#', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/csharp/csharp-original.svg' }
+  { id: 'java', name: 'Java', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg' }
 ];
 
 function App() {
   const [theme, setTheme] = useState('light');
-  const [language, setLanguage] = useState('html');
-  const [sourceCode, setSourceCode] = useState('');
-  
-  // Specific sections for frontend web preview mode
-  const [htmlCode, setHtmlCode] = useState('<h1>Hello World!</h1>');
-  const [cssCode, setCssCode] = useState('body {\n  background-color: transparent;\n  font-family: system-ui, sans-serif;\n  text-align: center;\n  margin-top: 50px;\n}\n\nh1 {\n  color: #6366f1;\n}');
-  const [jsCode, setJsCode] = useState('console.log("Hello World!");');
-
-  const [activePane, setActivePane] = useState(null);
-
-  const [previewContent, setPreviewContent] = useState('');
+  const [language, setLanguage] = useState('javascript');
+  const [sourceCode, setSourceCode] = useState(DEFAULT_CODE.javascript);
   const [isError, setIsError] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -189,12 +151,8 @@ function App() {
     const newLang = e.target.value;
     setLanguage(newLang);
     setGeneratedImages([]);
-    if (newLang !== 'html') {
-        setSourceCode(DEFAULT_CODE[newLang]);
-    }
+    setSourceCode(DEFAULT_CODE[newLang]);
     setIsError(false);
-    setPreviewContent('');
-    setActivePane(null);
     
     if (termInstance.current) {
         termInstance.current.reset();
@@ -210,12 +168,10 @@ function App() {
     if (termInstance.current) {
         termInstance.current.reset();
     }
-    // Also explicitly wipe out preview content regardless of the current selected language in case it's lingering
-    setPreviewContent('');
   };
 
   const runCode = () => {
-    if (language !== 'html' && !sourceCode.trim()) return;
+    if (!sourceCode.trim()) return;
     setGeneratedImages([]);
     
     if (activeWsRef.current) {
@@ -224,27 +180,6 @@ function App() {
 
     // Capture high-resolution start time for execution tracking
     executionStartRef.current = performance.now();
-
-    if (language === 'html') {
-        // Run completely fully on the browser rendering engine statically instead of WebSockets
-        const combinedPreview = `<!DOCTYPE html>
-<html>
-<head>
-  <style>
-    body { color: ${theme === 'light' ? '#000' : '#fff'}; }
-${cssCode}
-  </style>
-</head>
-<body>
-${htmlCode}
-  <script>
-${jsCode}
-  <\/script>
-</body>
-</html>`;
-        setPreviewContent(combinedPreview);
-        return;
-    }
 
     setIsRunning(true);
     setIsError(false);
@@ -420,17 +355,12 @@ ${jsCode}
         }
     }
     
-    doc.save(`CompileX_${language}_Export.pdf`);
+    doc.save(getPdfFileName());
   };
 
-  const getPaneClassName = (paneName) => {
-      if (activePane === null) return "web-pane default";
-      return activePane === paneName ? "web-pane active" : "web-pane inactive";
-  };
-
-  const getActiveHeaderColor = (paneName) => {
-      if (activePane === paneName) return theme === 'light' ? '#e2e8f0' : '#1e1e2e';
-      return 'transparent';
+  const getPdfFileName = () => {
+    const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+    return `CompileX_${language}_${timestamp}.pdf`;
   };
 
   return (
@@ -510,133 +440,65 @@ ${jsCode}
       <main className="main-content">
         {/* Editor Pane */}
         <div className="pane editor-pane">
-          {language === 'html' ? (
-            <div className="web-pane-container">
-              <div className={getPaneClassName('html')}>
-                <div 
-                  className="pane-header"
-                  style={{ cursor: 'pointer', userSelect: 'none', background: getActiveHeaderColor('html'), transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}
-                  onClick={() => setActivePane(activePane === 'html' ? null : 'html')}
-                  title="Click to expand/collapse"
-                >
-                  <div className="pane-header-icon"></div>
-                  <span style={{ fontSize: '0.85rem', fontWeight: '600', letterSpacing: '0.8px' }}>index.html</span>
-                </div>
-                <div style={{ flex: 1, position: 'relative' }} onClickCapture={() => setActivePane('html')}>
-                  <Editor
-                    height="100%"
-                    language="html"
-                    theme={theme === 'light' ? 'light' : 'vs-dark'}
-                    value={htmlCode}
-                    onChange={(val) => setHtmlCode(val || '')}
-                    options={{ minimap: { enabled: false }, fontSize: 14, fontFamily: "'JetBrains Mono', 'Fira Code', monospace", lineNumbersMinChars: 3, padding: { top: 16 } }}
-                  />
-                </div>
+          <>
+            <div className="pane-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div className="pane-header-icon"></div>
+                <span style={{ fontSize: '0.85rem', fontWeight: '600', letterSpacing: '0.8px' }}>
+                  {`source_code.${language === 'python' ? 'py' : language === 'javascript' ? 'js' : 'java'}`}
+                </span>
               </div>
-              <div className={getPaneClassName('css')}>
-                <div 
-                  className="pane-header"
-                  style={{ cursor: 'pointer', userSelect: 'none', background: getActiveHeaderColor('css'), transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}
-                  onClick={() => setActivePane(activePane === 'css' ? null : 'css')}
-                  title="Click to expand/collapse"
+              <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+                <button 
+                  className="clear-output-btn"
+                  style={{ marginLeft: 0, padding: '0.5rem 0.9rem', fontSize: '0.75rem' }}
+                  onClick={() => setSourceCode('')}
+                  title="Clear Code"
                 >
-                  <div className="pane-header-icon"></div>
-                  <span style={{ fontSize: '0.85rem', fontWeight: '600', letterSpacing: '0.8px' }}>style.css</span>
-                </div>
-                <div style={{ flex: 1, position: 'relative' }} onClickCapture={() => setActivePane('css')}>
-                  <Editor
-                    height="100%"
-                    language="css"
-                    theme={theme === 'light' ? 'light' : 'vs-dark'}
-                    value={cssCode}
-                    onChange={(val) => setCssCode(val || '')}
-                    options={{ minimap: { enabled: false }, fontSize: 14, fontFamily: "'JetBrains Mono', 'Fira Code', monospace", lineNumbersMinChars: 3, padding: { top: 16 } }}
-                  />
-                </div>
-              </div>
-              <div className={getPaneClassName('js')}>
-                <div 
-                  className="pane-header"
-                  style={{ cursor: 'pointer', userSelect: 'none', background: getActiveHeaderColor('js'), transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}
-                  onClick={() => setActivePane(activePane === 'js' ? null : 'js')}
-                  title="Click to expand/collapse"
+                  Clear
+                </button>
+                <button 
+                  className="clear-output-btn"
+                  style={{ marginLeft: 0, padding: '0.5rem 0.9rem', fontSize: '0.75rem' }}
+                  onClick={() => setShowPdfModal(true)}
+                  title="Export Code to PDF"
                 >
-                  <div className="pane-header-icon"></div>
-                  <span style={{ fontSize: '0.85rem', fontWeight: '600', letterSpacing: '0.8px' }}>script.js</span>
-                </div>
-                <div style={{ flex: 1, position: 'relative' }} onClickCapture={() => setActivePane('js')}>
-                  <Editor
-                    height="100%"
-                    language="javascript"
-                    theme={theme === 'light' ? 'light' : 'vs-dark'}
-                    value={jsCode}
-                    onChange={(val) => setJsCode(val || '')}
-                    options={{ minimap: { enabled: false }, fontSize: 14, fontFamily: "'JetBrains Mono', 'Fira Code', monospace", lineNumbersMinChars: 3, padding: { top: 16 } }}
-                  />
-                </div>
+                  Export PDF
+                </button>
+                <button 
+                  className="clear-output-btn"
+                  style={{ marginLeft: 0, padding: '0.5rem 0.9rem', fontSize: '0.75rem' }}
+                  onClick={() => {
+                    navigator.clipboard.writeText(sourceCode);
+                    setIsCopied(true);
+                    setTimeout(() => setIsCopied(false), 2000);
+                  }}
+                  title="Copy code to clipboard"
+                >
+                  {isCopied ? "✓ Copied!" : "Copy"}
+                </button>
               </div>
             </div>
-          ) : (
-            <>
-              <div className="pane-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <div className="pane-header-icon"></div>
-                  <span style={{ fontSize: '0.85rem', fontWeight: '600', letterSpacing: '0.8px' }}>
-                    {`source_code.${MONACO_LANGS[language] === 'python' ? 'py' : MONACO_LANGS[language] === 'javascript' ? 'js' : MONACO_LANGS[language] === 'c' ? 'c' : MONACO_LANGS[language] === 'java' ? 'java' : MONACO_LANGS[language] === 'csharp' ? 'cs' : 'cpp'}`}
-                  </span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
-                  <button 
-                    className="clear-output-btn"
-                    style={{ marginLeft: 0, padding: '0.5rem 0.9rem', fontSize: '0.75rem' }}
-                    onClick={() => setSourceCode('')}
-                    title="Clear Code"
-                  >
-                    Clear
-                  </button>
-                  <button 
-                    className="clear-output-btn"
-                    style={{ marginLeft: 0, padding: '0.5rem 0.9rem', fontSize: '0.75rem' }}
-                    onClick={() => setShowPdfModal(true)}
-                    title="Export Code to PDF"
-                  >
-                    Export PDF
-                  </button>
-                  <button 
-                    className="clear-output-btn"
-                    style={{ marginLeft: 0, padding: '0.5rem 0.9rem', fontSize: '0.75rem' }}
-                    onClick={() => {
-                      navigator.clipboard.writeText(sourceCode);
-                      setIsCopied(true);
-                      setTimeout(() => setIsCopied(false), 2000);
-                    }}
-                    title="Copy code to clipboard"
-                  >
-                    {isCopied ? "✓ Copied!" : "Copy"}
-                  </button>
-                </div>
-              </div>
-              <div className="editor-container">
-                <Editor
-                  height="100%"
-                  language={MONACO_LANGS[language]}
-                  theme={theme === 'light' ? 'light' : 'vs-dark'}
-                  value={sourceCode}
-                  onChange={(val) => setSourceCode(val)}
-                  onMount={handleEditorDidMount}
-                  options={{
-                    minimap: { enabled: false },
-                    fontSize: 14,
-                    fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
-                    lineNumbersMinChars: 3,
-                    scrollBeyondLastLine: false,
-                    automaticLayout: true,
-                    padding: { top: 16 }
-                  }}
-                />
-              </div>
-            </>
-          )}
+            <div className="editor-container">
+              <Editor
+                height="100%"
+                language={MONACO_LANGS[language]}
+                theme={theme === 'light' ? 'light' : 'vs-dark'}
+                value={sourceCode}
+                onChange={(val) => setSourceCode(val)}
+                onMount={handleEditorDidMount}
+                options={{
+                  minimap: { enabled: false },
+                  fontSize: 14,
+                  fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
+                  lineNumbersMinChars: 3,
+                  scrollBeyondLastLine: false,
+                  automaticLayout: true,
+                  padding: { top: 16 }
+                }}
+              />
+            </div>
+          </>
         </div>
 
         {/* Terminal Pane */}
@@ -646,7 +508,7 @@ ${jsCode}
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <div className="pane-header-icon"></div>
                 <span style={{ fontSize: '0.85rem', fontWeight: '600', letterSpacing: '0.8px' }}>
-                  {language === 'html' ? '🌐 Web Preview' : '⌨️ Terminal'}
+                  ⌨️ Terminal
                 </span>
               </div>
               <button 
@@ -667,13 +529,13 @@ ${jsCode}
                   padding: '1.2rem', 
                   overflow: 'hidden', 
                   background: theme === 'light' ? '#ffffff' : '#050810',
-                  display: language === 'html' ? 'none' : 'block',
+                  display: 'block',
                   transition: 'background 0.3s ease'
               }}
             ></div>
 
             {/* Genarated Graphical Outputs */}
-            {generatedImages.length > 0 && language !== 'html' && (
+            {generatedImages.length > 0 && (
                 <div style={{
                     padding: '1.2rem',
                     background: theme === 'light' ? '#f3f5f9' : '#161b26',
@@ -723,24 +585,6 @@ ${jsCode}
                         </div>
                     ))}
                 </div>
-            )}
-
-            {/* Browser Preview IFrame */}
-            {language === 'html' && (
-              <div style={{ flex: 1, backgroundColor: theme === 'light' ? '#ffffff' : '#050810', overflow: 'hidden', borderRadius: '0 0 12px 12px' }}>
-                <iframe
-                  title="Web Preview"
-                  sandbox="allow-scripts allow-modals allow-popups"
-                  srcDoc={previewContent}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    border: 'none',
-                    display: 'block',
-                    background: theme === 'light' ? '#ffffff' : '#050810'
-                  }}
-                />
-              </div>
             )}
             
           </div>

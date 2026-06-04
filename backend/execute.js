@@ -73,98 +73,12 @@ function runInteractive(language, code, ws) {
                 spawnProcess('java', ['-cp', uniqueDir, className], ws, [uniqueDir]);
             });
             return;
-        } else if (language === 'csharp' || language === 'c#') {
-            const uniqueDir = path.join(TEMP_DIR, uuid);
-            fs.mkdirSync(uniqueDir, { recursive: true });
-            
-            safeWsSend(ws, `\x1b[33mInitializing C# project...\x1b[0m\r\n`);
-            
-            exec(`dotnet new console -n CSharpApp -o "${uniqueDir}"`, (err, stdout, stderr) => {
-                if (err) {
-                    safeWsSend(ws, `\x1b[31mFailed to init C# project (Is .NET SDK installed?):\x1b[0m\r\n${stderr.replace(/\n/g, '\r\n')}\r\n`);
-                    cleanup([uniqueDir]);
-                    if (ws.readyState === 1) ws.close();
-                    return;
-                }
-                
-                // Replace generated Program.cs with user code
-                fs.writeFileSync(path.join(uniqueDir, "Program.cs"), code);
-                
-                safeWsSend(ws, `\x1b[33mCompiling (C# takes a few seconds purely for the first run)...\x1b[0m\r\n`);
-                
-                exec(`dotnet publish "${uniqueDir}" -c Release -o "${path.join(uniqueDir, 'out')}"`, (err2, stdout2, stderr2) => {
-                    if (err2) {
-                        safeWsSend(ws, `\x1b[31mCompilation Error:\x1b[0m\r\n${stderr2.replace(/\n/g, '\r\n')}\r\n`);
-                        cleanup([uniqueDir]);
-                        if (ws.readyState === 1) ws.close();
-                        return;
-                    }
-                    
-                    safeWsSend(ws, `\x1b[32mSuccessfully compiled. Running...\x1b[0m\r\n\r\n`);
-                    const exePath = path.join(uniqueDir, 'out', 'CSharpApp.exe');
-                    spawnProcess(exePath, [], ws, [uniqueDir]);
-                });
-            });
-            return;
-        } else if (language === 'c' || language === 'c++' || language === 'cpp') {
-            const isCpp = language === 'c++' || language === 'cpp';
-            const ext = isCpp ? '.cpp' : '.c';
-            filePath = path.join(TEMP_DIR, `${uuid}${ext}`);
-            executablePath = path.join(TEMP_DIR, `${uuid}.exe`);
-            
-            // Unbuffer C/C++ stdout dynamically so interactive prompts show up immediately
-            let processedCode = code;
-            if (processedCode.includes('int main') || processedCode.includes('void main')) {
-                if (isCpp) {
-                    if (!processedCode.includes('<iostream>')) {
-                        processedCode = "#include <iostream>\n" + processedCode;
-                    }
-                    processedCode = processedCode.replace(/(int\s+main\s*\([^)]*\)\s*\{|void\s+main\s*\([^)]*\)\s*\{)/, "$1\n    std::cout << std::unitbuf;\n");
-                } else {
-                    if (!processedCode.includes('<stdio.h>')) {
-                        processedCode = "#include <stdio.h>\n" + processedCode;
-                    }
-                    
-                    // Safely explicitly unbuffer stdout using a C preprocessor macro to avoid AST structural breaks in complex C code
-                    const includeMatches = [...processedCode.matchAll(/#include\s*[<"][^>"]+[>"]/g)];
-                    if (includeMatches.length > 0) {
-                        const lastMatch = includeMatches[includeMatches.length - 1];
-                        const insertPos = lastMatch.index + lastMatch[0].length;
-                        processedCode = processedCode.slice(0, insertPos) + "\n#define printf(...) (printf(__VA_ARGS__), fflush(stdout))\n" + processedCode.slice(insertPos);
-                    } else {
-                        processedCode = "#define printf(...) (printf(__VA_ARGS__), fflush(stdout))\n" + processedCode;
-                    }
-                }
-            }
-            
-            // DEBUG DUMP:
-            fs.writeFileSync(path.join(TEMP_DIR, "debug_c_code.c"), processedCode);
 
-            fs.writeFileSync(filePath, processedCode);
-            const compiler = isCpp ? 'g++' : 'gcc';
-            safeWsSend(ws, `\x1b[33mCompiling...\x1b[0m\r\n`);
-            
-            exec(`${compiler} "${filePath}" -o "${executablePath}"`, (err, stdout, stderr) => {
-                if (err) {
-                    safeWsSend(ws, `\x1b[31mCompilation Error:\x1b[0m\r\n${stderr.replace(/\n/g, '\r\n')}\r\n`);
-                    cleanup([filePath, executablePath]);
-                    if (ws.readyState === 1) ws.close();
-                    return;
-                }
-                safeWsSend(ws, `\x1b[32mSuccessfully compiled. Running...\x1b[0m\r\n\r\n`);
-                spawnProcess(executablePath, [], ws, [filePath, executablePath]);
-            });
-            return;
         } else {
-            safeWsSend(ws, `\x1b[31mUnsupported language: ${language}\x1b[0m\r\n`);
+            safeWsSend(ws, `\x1b[31mUnsupported language: ${language}\x1b[0m\r\n\x1b[33mSupported languages: Java, Python, JavaScript\x1b[0m\r\n`);
             if (ws.readyState === 1) ws.close();
             return;
         }
-
-        fs.writeFileSync(filePath, code);
-        safeWsSend(ws, `\x1b[32mRunning ${language} process...\x1b[0m\r\n\r\n`);
-        spawnProcess(command, args, ws, [filePath]);
-
     } catch (err) {
         safeWsSend(ws, `\x1b[31mFailed to start process:\x1b[0m\r\n${err.message}\r\n`);
         if (ws.readyState === 1) ws.close();
