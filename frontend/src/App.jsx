@@ -8,21 +8,18 @@ import 'xterm/css/xterm.css';
 // Defaults for languages
 const DEFAULT_CODE = {
   python: 'print("Hello World!")',
-  javascript: 'console.log("Hello World!");',
-  java: 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello World!");\n    }\n}'
+  javascript: 'console.log("Hello World!");'
 };
 
 // Monaco language identifiers mapped to ours
 const MONACO_LANGS = {
   python: 'python',
-  javascript: 'javascript',
-  java: 'java'
+  javascript: 'javascript'
 };
 
 const LANGUAGES = [
   { id: 'python', name: 'Python', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg' },
-  { id: 'javascript', name: 'JavaScript (Node)', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg' },
-  { id: 'java', name: 'Java', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg' }
+  { id: 'javascript', name: 'JavaScript (Node)', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg' }
 ];
 
 function App() {
@@ -445,7 +442,7 @@ function App() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <div className="pane-header-icon"></div>
                 <span style={{ fontSize: '0.85rem', fontWeight: '600', letterSpacing: '0.8px' }}>
-                  {`source_code.${language === 'python' ? 'py' : language === 'javascript' ? 'js' : 'java'}`}
+                  {`source_code.${language === 'python' ? 'py' : 'js'}`}
                 </span>
               </div>
               <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>

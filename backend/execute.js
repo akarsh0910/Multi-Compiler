@@ -50,32 +50,8 @@ function runInteractive(language, code, ws) {
             safeWsSend(ws, `\x1b[32mRunning Python process...\x1b[0m\r\n\r\n`);
             spawnProcess(command, args, ws, [uniqueDir], uniqueDir);
             return;
-        } else if (language === 'java') {
-            const uniqueDir = path.join(TEMP_DIR, uuid);
-            fs.mkdirSync(uniqueDir, { recursive: true });
-            
-            const classMatch = code.match(/public\s+class\s+([a-zA-Z_$][a-zA-Z\d_$]*)/) || code.match(/class\s+([a-zA-Z_$][a-zA-Z\d_$]*)/);
-            const className = classMatch ? classMatch[1] : 'Main';
-            
-            filePath = path.join(uniqueDir, `${className}.java`);
-            
-            fs.writeFileSync(filePath, code);
-            safeWsSend(ws, `\x1b[33mCompiling...\x1b[0m\r\n`);
-            
-            exec(`javac "${filePath}"`, (err, stdout, stderr) => {
-                if (err) {
-                    safeWsSend(ws, `\x1b[31mCompilation Error (Is Java JDK installed?):\x1b[0m\r\n${stderr.replace(/\n/g, '\r\n')}\r\n`);
-                    cleanup([uniqueDir]);
-                    if (ws.readyState === 1) ws.close();
-                    return;
-                }
-                safeWsSend(ws, `\x1b[32mSuccessfully compiled. Running...\x1b[0m\r\n\r\n`);
-                spawnProcess('java', ['-cp', uniqueDir, className], ws, [uniqueDir]);
-            });
-            return;
-
         } else {
-            safeWsSend(ws, `\x1b[31mUnsupported language: ${language}\x1b[0m\r\n\x1b[33mSupported languages: Java, Python, JavaScript\x1b[0m\r\n`);
+            safeWsSend(ws, `\x1b[31mUnsupported language: ${language}\x1b[0m\r\n\x1b[33mSupported languages: Python, JavaScript\x1b[0m\r\n`);
             if (ws.readyState === 1) ws.close();
             return;
         }
