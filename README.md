@@ -3,7 +3,6 @@
 A modern, high-performance online multi-language code playground and execution engine that allows users to write, compile, and run code directly in their browser. 
 
 
-
 ##  About
 
 **Multi-compiler** is a web-based sandbox built to eliminate the friction of local software setups for beginners. It provides an instantaneous execution environment for multiple programming languages with a side-by-side live terminal experience. Designed with clean modular architecture, it isolates frontend UI states from heavy compilation operations on the backend.
