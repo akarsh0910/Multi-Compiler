@@ -23,7 +23,7 @@ const LANGUAGES = [
 ];
 
 function App() {
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState('dark');
   const [language, setLanguage] = useState('javascript');
   const [sourceCode, setSourceCode] = useState(DEFAULT_CODE.javascript);
   const [isError, setIsError] = useState(false);
